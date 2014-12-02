@@ -1,7 +1,7 @@
 <h1>GoCD Plugin for Docker - Registry Poller</h1>
 
-The goal of this project is to offer a plugin for the GoCD build management tool. The plugin looks for changes in the Docker registry (Material) and triggers a pipeline
-when the hash has changed. It enables continuous deployment with Docker from Go.CD.
+The goal of this project is to offer a plugin for the GoCD build management tool. The plugin looks for changes in the Docker registry and triggers a pipeline
+when the hash has changed. It enables continuous deployment with Docker from Go.CD. Now you can use the Docker Registry as material.
 
 
 <h2>ToDo</h2>
