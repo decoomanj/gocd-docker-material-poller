@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="Docker" version="6">
+<about>
+    <name>Docker Registry Plugin</name>
+    <version>0.0.1</version>
+    <target-go-version>14.3</target-go-version>
+    <description>Check for new Docker releases in a Docker Registry</description>
+    <vendor>
+        <name>Jan De Cooman</name>
+        <url>https://github.com/decoomanj/gocd-docker-material-poller</url>
+    </vendor>
+</about>
+</go-plugin>
+
