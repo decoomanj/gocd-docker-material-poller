@@ -46,7 +46,7 @@ public class HttpSupport {
         return client;
     }
 
-    private int getSystemProperty(String key, int defaultValue) {
+    private int getSystemProperty(final String key, final int defaultValue) {
         try {
             return Integer.parseInt(System.getProperty(key));
         } catch (NumberFormatException e) {

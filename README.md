@@ -15,6 +15,14 @@ it in your local repository.
 mvn install:install-file -Dfile=go-plugin-api-current.jar -DgroupId=com.thoughtworks.go -DartifactId=go-plugin-api -Dversion=14.3.0 -Dpackaging=jar
 </blockquote>
 
+<h2>Connection Settings</h2>
+You can specify the connection and socket timeout when you're not satisfied with the default values. You can add the following properties to the system properties:
+
+<ul>
+ <li><b>docker.repo.connection.timeout</b> (default 10s)</li>
+ <li><b>docker.repo.socket.timeout</b> (default 300s)</li>
+</ul>        
+
 
 <h2>Credits</h2>
 

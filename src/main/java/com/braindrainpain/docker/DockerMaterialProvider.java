@@ -49,7 +49,7 @@ public class DockerMaterialProvider implements PackageMaterialProvider {
     }
 
     @UnLoad
-    public void onUnLoad(PluginContext context) {
+    public void onUnLoad(final PluginContext context) {
         LOG.info("Removed Docker plugin" );
     }
 

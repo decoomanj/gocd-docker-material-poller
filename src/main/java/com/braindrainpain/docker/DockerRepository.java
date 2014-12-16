@@ -48,11 +48,11 @@ public class DockerRepository extends HttpSupport {
 
     final private RepositoryConfiguration repositoryConfiguration;
 
-    private DockerRepository(RepositoryConfiguration repositoryConfiguration) {
+    private DockerRepository(final RepositoryConfiguration repositoryConfiguration) {
         this.repositoryConfiguration = repositoryConfiguration;
     }
 
-    public static DockerRepository getInstance(RepositoryConfiguration repositoryConfiguration) {
+    public static DockerRepository getInstance(final RepositoryConfiguration repositoryConfiguration) {
         return new DockerRepository(repositoryConfiguration);
     }
 
@@ -82,9 +82,9 @@ public class DockerRepository extends HttpSupport {
      */
     private JsonObject allTags(final PackageConfiguration packageConfiguration) {
         JsonObject result = null;
-        HttpClient client = getHttpClient();
+        HttpClient client = super.getHttpClient();
 
-        String repository = MessageFormat.format("{0}/v1/repositories/{1}/tags",
+        String repository = MessageFormat.format(DockerAPI.V1.getUrl(),
                 repositoryConfiguration.get(Constants.REGISTRY).getValue(),
                 packageConfiguration.get(Constants.REPOSITORY).getValue());
         
@@ -96,6 +96,8 @@ public class DockerRepository extends HttpSupport {
                 result = (JsonObject) new JsonParser().parse(jsonString);
             }
         } catch (IOException e) {
+            // Wrap into a runtime. There is nothing useful to do here
+            // when this happens.
             throw new RuntimeException("Cannot fetch the tags from " + repository, e);
         }
 

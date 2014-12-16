@@ -46,6 +46,15 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
 
     final private static Logger LOG = Logger.getLoggerFor(DockerMaterialConfiguration.class);
 
+    /**
+     * Supply the fields for the repository configuration. The repository
+     * configuration encapsulates the information where the Docker Registry can
+     * be found. This is global information for the whole Go-environment.
+     *
+     * NOTE: A repository in Go is the registry from Docker.
+     *
+     * @return RepositoryConfiguration
+     */
     @Override
     public RepositoryConfiguration getRepositoryConfiguration() {
         RepositoryConfiguration repositoryConfiguration = new RepositoryConfiguration();
@@ -54,6 +63,14 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
         return repositoryConfiguration;
     }
 
+    /**
+     * Supply the fields for the package configuration. The package
+     * configuration extends the repository information with Docker-image
+     * specific information. This information must be supplied when the material
+     * is fetched.
+     *
+     * @return PackageConfiguration
+     */
     @Override
     public PackageConfiguration getPackageConfiguration() {
         PackageConfiguration packageConfiguration = new PackageConfiguration();
@@ -65,13 +82,19 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
     }
 
     /**
-     * Check the validity of the registry URL
+     * Check the validity of the supplied repository fields. It does a syntax
+     * check. It does not check if the repository is available. It checks if the
+     * repository contains unwanted fields.
+     *
+     * NOTE: A package in Go is the repository from Docker.
      *
      * @param repositoryConfiguration
-     * @return
+     * @return ValidationResult
      */
     @Override
-    public ValidationResult isRepositoryConfigurationValid(final RepositoryConfiguration repositoryConfiguration) {
+    public ValidationResult isRepositoryConfigurationValid(
+            final RepositoryConfiguration repositoryConfiguration) {
+
         LOG.info("Validating repository: " + repositoryConfiguration.get(Constants.REGISTRY).getValue());
         ValidationResult validationResult = new ValidationResult();
         this.validateKeys(getRepositoryConfiguration(), repositoryConfiguration, validationResult);
@@ -87,14 +110,19 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
     }
 
     /**
-     * Check if the package specific fields are set.
+     * Check the validity of the supplied package fields. It does a syntax
+     * check. It does not check if the repository is available. It checks if the
+     * repository contains unwanted fields.
      *
      * @param packageConfiguration
      * @param repositoryConfiguration
-     * @return
+     * @return ValidationResult
      */
     @Override
-    public ValidationResult isPackageConfigurationValid(PackageConfiguration packageConfiguration, RepositoryConfiguration repositoryConfiguration) {
+    public ValidationResult isPackageConfigurationValid(
+            final PackageConfiguration packageConfiguration,
+            final RepositoryConfiguration repositoryConfiguration) {
+
         ValidationResult validationResult = new ValidationResult();
         this.validateKeys(getPackageConfiguration(), packageConfiguration, validationResult);
 
@@ -103,6 +131,7 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
             validationResult.addError(new ValidationError(Constants.REPOSITORY, "Repository not specified"));
             return validationResult;
         }
+
         String repositoryName = repository.getValue();
         if (StringUtils.isEmpty(repositoryName)) {
             validationResult.addError(new ValidationError(Constants.REPOSITORY, "Repository is empty or not set"));
@@ -114,6 +143,7 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
             validationResult.addError(new ValidationError(Constants.TAG, "Tag not specified"));
             return validationResult;
         }
+
         String tagName = tag.getValue();
         if (StringUtils.isEmpty(tagName)) {
             validationResult.addError(new ValidationError(Constants.TAG, "Tag is empty or not set"));
@@ -124,7 +154,7 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
     }
 
     /**
-     * Validate the fields of both configuration.
+     * Validate the fields of both configurations.
      *
      * @param packageConfiguration
      * @param repositoryConfiguration
@@ -135,16 +165,24 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
             final RepositoryConfiguration repositoryConfiguration,
             final ValidationResult validationResult) {
 
-        ValidationResult repositoryConfigurationValidationResult = isRepositoryConfigurationValid(repositoryConfiguration);
+        ValidationResult repositoryConfigurationValidationResult
+                = this.isRepositoryConfigurationValid(repositoryConfiguration);
         validationResult.addErrors(repositoryConfigurationValidationResult.getErrors());
-        ValidationResult packageConfigurationValidationResult = isPackageConfigurationValid(packageConfiguration, repositoryConfiguration);
+
+        ValidationResult packageConfigurationValidationResult
+                = this.isPackageConfigurationValid(packageConfiguration, repositoryConfiguration);
         validationResult.addErrors(packageConfigurationValidationResult.getErrors());
     }
 
     /**
-     * Filter out unwanted keys
+     * Filter out unregistered keys. Avoid injection of keys which are not
+     * an official part of the plugin.
      */
-    private void validateKeys(Configuration configDefinedByPlugin, Configuration configDefinedByUser, ValidationResult validationResult) {
+    private void validateKeys(
+            final Configuration configDefinedByPlugin,
+            final Configuration configDefinedByUser,
+            final ValidationResult validationResult) {
+
         List<String> validKeys = new ArrayList<>();
         List<String> invalidKeys = new ArrayList<>();
         for (Property configuration : configDefinedByPlugin.list()) {
@@ -157,10 +195,17 @@ public class DockerMaterialConfiguration implements PackageMaterialConfiguration
             }
         }
         if (!invalidKeys.isEmpty()) {
-            validationResult.addError(new ValidationError("", String.format("Unsupported key(s) found : %s. Allowed key(s) are : %s", join(invalidKeys), join(validKeys))));
+            validationResult.addError(new ValidationError("",
+                    String.format("Unsupported key(s) found : %s. Allowed key(s) are : %s",
+                            join(invalidKeys), join(validKeys))));
         }
     }
 
+    /**
+     * Convenience method to concatenate a list of keys as a string
+     * @param keys list of keys
+     * @return String
+     */
     private String join(final List<String> keys) {
         StringBuilder sb = new StringBuilder();
         for (String key : keys) {

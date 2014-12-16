@@ -44,7 +44,10 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
             = Logger.getLoggerFor(DockerMaterialPoller.class);
 
     @Override
-    public PackageRevision getLatestRevision(PackageConfiguration packageConfiguration, RepositoryConfiguration repositoryConfiguration) {
+    public PackageRevision getLatestRevision(
+            final PackageConfiguration packageConfiguration, 
+            final RepositoryConfiguration repositoryConfiguration) {
+        
         // the fields must be valid
         this.validateData(repositoryConfiguration, packageConfiguration);
 
@@ -54,7 +57,10 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
     }
 
     @Override
-    public PackageRevision latestModificationSince(PackageConfiguration packageConfiguration, RepositoryConfiguration repositoryConfiguration, PackageRevision packageRevision) {
+    public PackageRevision latestModificationSince(
+            final PackageConfiguration packageConfiguration, 
+            final RepositoryConfiguration repositoryConfiguration, 
+            final PackageRevision packageRevision) {
         PackageRevision latestRevision = this.getLatestRevision(packageConfiguration, repositoryConfiguration);
 
         if (!latestRevision.getRevision().contentEquals(packageRevision.getRevision())) {
@@ -70,7 +76,8 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
      * @return
      */
     @Override
-    public Result checkConnectionToRepository(RepositoryConfiguration repositoryConfiguration) {
+    public Result checkConnectionToRepository(
+            final RepositoryConfiguration repositoryConfiguration) {
 
         Result result = this.validateRepository(repositoryConfiguration);
         if (!result.isSuccessful()) {
@@ -98,7 +105,10 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
      * @return
      */
     @Override
-    public Result checkConnectionToPackage(PackageConfiguration packageConfiguration, RepositoryConfiguration repositoryConfiguration) {
+    public Result checkConnectionToPackage(
+            final PackageConfiguration packageConfiguration, 
+            final RepositoryConfiguration repositoryConfiguration) {
+        
         Result checkConnectionResult = this.checkConnectionToRepository(repositoryConfiguration);
         if (!checkConnectionResult.isSuccessful()) {
             return checkConnectionResult;
@@ -125,7 +135,9 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
      * @param repositoryConfiguration
      * @return
      */
-    private Result validateRepository(RepositoryConfiguration repositoryConfiguration) {
+    private Result validateRepository(
+            final RepositoryConfiguration repositoryConfiguration) {
+        
         ValidationResult validationResult = new DockerMaterialConfiguration().isRepositoryConfigurationValid(repositoryConfiguration);
         if (!validationResult.isSuccessful()) {
             return new Result().withErrorMessages(validationResult.getMessages());
@@ -140,7 +152,10 @@ public class DockerMaterialPoller implements PackageMaterialPoller {
      * @param repositoryPackageConfiguration
      * @return
      */
-    private Result packageValidation(PackageConfiguration packageConfigurations, RepositoryConfiguration repositoryPackageConfiguration) {
+    private Result packageValidation(
+            final PackageConfiguration packageConfigurations, 
+            final RepositoryConfiguration repositoryPackageConfiguration) {
+        
         ValidationResult validationResult = new DockerMaterialConfiguration().isPackageConfigurationValid(packageConfigurations, repositoryPackageConfiguration);
         if (!validationResult.isSuccessful()) {
             return new Result().withErrorMessages(validationResult.getMessages());

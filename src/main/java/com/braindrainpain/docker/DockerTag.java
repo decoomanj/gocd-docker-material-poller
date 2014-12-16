@@ -34,22 +34,21 @@ public class DockerTag {
 
     final private String hash;
 
-    public DockerTag(String tag, String hash) {
+    public DockerTag(final String tag, final String hash) {
         this.tag = tag;
         this.hash = hash;
     }
 
     public String getTag() {
-        return tag;
+        return this.tag;
     }
 
     public String getHash() {
-        return hash;
+        return this.hash;
     }
 
     @Override
     public String toString() {
         return this.getTag() + "@" + this.getHash();
     }
-
 }
