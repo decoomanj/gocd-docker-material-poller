@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<go-plugin id="Docker" version="6">
+<go-plugin id="Docker" version="1">
 <about>
     <name>Docker Registry Plugin</name>
     <version>0.0.1</version>
